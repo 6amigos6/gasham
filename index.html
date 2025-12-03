@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚓ORUJOV⚓ — Müvəqqəti E-poçt</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols Outlined -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+        
+        /* Scrollbar gizlət */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Splash Screen */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-out;
+        }
+        
+        #splash.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .splash-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+        }
+        
+        .splash-motto {
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: linear-gradient(90deg, #93c5fd, #dbeafe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .loading-bar-container {
+            width: 80%;
+            max-width: 300px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #93c5fd, #dbeafe);
+            border-radius: 10px;
+            animation: loadProgress 2s ease-out forwards;
+        }
+        
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(200px);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: toastIn 0.3s ease-out forwards;
+            max-width: 90%;
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .toast.hiding {
+            animation: toastOut 0.3s ease-out forwards;
+        }
+        
+        @keyframes toastIn {
+            to {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes toastOut {
+            to {
+                transform: translateX(-50%) translateY(200px);
+                opacity: 0;
+            }
+        }
+        
+        /* Gəmi batma animasiyası */
+        @keyframes shipSink {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            30% {
+                transform: translateY(10px) rotate(-10deg) scale(0.95);
+                opacity: 0.9;
+            }
+            60% {
+                transform: translateY(40px) rotate(-20deg) scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(100px) rotate(-30deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        .ship-emoji {
+            display: inline-block;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .ship-emoji.sinking {
+            animation: shipSink 1.2s ease-in forwards;
+        }
+        
+        /* Gradient button */
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Card styles */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* Material icon */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Header */
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0369a1, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        .app-motto {
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #0284c7, #0369a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        
+        /* Spinner */
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Email display */
+        .email-display {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0369a1;
+            word-break: break-all;
+        }
+        
+        /* Timer */
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Inbox item */
+        .inbox-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .inbox-item:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* History item */
+        .history-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .history-item:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .history-item.active {
+            border: 2px solid #0ea5e9;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Message body */
+        .message-body {
+            line-height: 1.7;
+            color: #374151;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            position: relative;
+        }
+        
+        .message-body img {
+            max-width: 100%;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .message-body a {
+            color: #0284c7;
+            text-decoration: underline;
+        }
+        
+        /* Floating Copy Button */
+        #floatingCopyBtn {
+            position: fixed;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        #floatingCopyBtn:hover {
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.7);
+            transform: scale(1.05);
+        }
+        
+        #floatingCopyBtn:active {
+            transform: scale(0.95);
+        }
+        
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        #floatingCopyBtn.show {
+            display: flex;
+            animation: floatIn 0.2s ease-out;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            border: none;
+            background: transparent;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #0ea5e9;
+        }
+        
+        .nav-item .material-symbols-outlined {
+            font-size: 1.75rem;
+        }
+        
+        .nav-item span:not(.material-symbols-outlined) {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Badge */
+        .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 9999px;
+            padding: 0.125rem 0.375rem;
+            font-size: 0.625rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Hide element */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Delete button */
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-btn:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .splash-title {
+                font-size: 2rem;
+            }
+            .app-title {
+                font-size: 1.75rem;
+            }
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            .email-display {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="no-scrollbar">
+    
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div class="splash-title">⚓ORUJOV⚓</div>
+        <div class="splash-motto">THE LIFE IS NOT FAIR, YOU SHOULD NOT BE FAIR</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+    
+    <!-- Floating Copy Button -->
+    <button id="floatingCopyBtn">
+        <span class="material-symbols-outlined" style="font-size: 1.125rem;">content_copy</span>
+        <span>Kopyala</span>
+    </button>
+    
+    <!-- Main App -->
+    <div id="app" class="hidden min-h-screen px-4 py-6 max-w-2xl mx-auto">
+        
+        <!-- Header -->
+        <header class="mb-6">
+            <h1 class="app-title">⚓ORUJOV⚓</h1>
+            <p class="app-motto">THE LIFE IS NOT FAIR, YOU SHOULD NOT BE FAIR.</p>
+        </header>
+        
+        <!-- ==================== HOME PAGE ==================== -->
+        <div id="homePage">
+            
+            <!-- Yeni Email Düyməsi -->
+            <div class="mb-6 flex justify-center">
+                <button id="newEmailBtn" class="btn-primary">
+                    <span id="shipEmoji" class="ship-emoji">🚢</span>
+                    <span>GƏMİNİ BATIR</span>
+                </button>
+            </div>
+            
+            <!-- Email Kartı -->
+            <div class="card mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-600">mail</span>
+                        <span class="font-semibold text-gray-700">Sizin e-poçt:</span>
+                    </div>
+                    <button id="copyBtn" class="text-sm bg-sky-100 text-sky-700 px-4 py-2 rounded-lg font-semibold hover:bg-sky-200 transition">
+                        Kopyala
+                    </button>
+                </div>
+                <div id="emailDisplay" class="email-display">---</div>
+            </div>
+            
+            <!-- Timer Kartı -->
+            <div class="card mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="text-sm text-gray-600 mb-1">Qalan vaxt:</div>
+                        <div id="timerDisplay" class="timer-display">10:00</div>
+                    </div>
+                    <button id="extendBtn" class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition">
+                        VAXT UZAT
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Inbox Section -->
+            <div id="inboxSection">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-600">inbox</span>
+                        Gələn Qutusu
+                    </h2>
+                    <button id="refreshBtn" class="text-sky-600 hover:text-sky-700 transition flex items-center gap-1">
+                        <span class="material-symbols-outlined">refresh</span>
+                        <span class="font-semibold">Yenilə</span>
+                    </button>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyState" class="card text-center py-12">
+                    <div class="text-6xl mb-4">⚓</div>
+                    <p class="text-gray-600">Sizin inbox boşdur — Gələn məktubları gözləyir...</p>
+                </div>
+                
+                <!-- Messages List -->
+                <div id="messagesList"></div>
+            </div>
+            
+            <!-- Message Detail Section -->
+            <div id="messageDetail" class="hidden">
+                <button id="backBtn" class="flex items-center gap-2 text-sky-600 hover:text-sky-700 mb-4 font-semibold">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Geri
+                </button>
+                
+                <div class="card">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div id="senderAvatar" class="avatar">O</div>
+                        <div class="flex-1 min-w-0">
+                            <h2 id="messageSubject" class="text-xl font-bold text-gray-800 mb-1"></h2>
+                            <div id="messageFrom" class="text-sm text-gray-600 mb-1"></div>
+                            <div id="messageDate" class="text-xs text-gray-500"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div id="messageBody" class="message-body"></div>
+                    </div>
+                    
+                    <div class="border-t mt-6 pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="copyMessageBtn" class="bg-gradient-to-br from-sky-500 to-sky-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem;">content_copy</span>
+                            <span>MESAJI KOPYALA</span>
+                        </button>
+                        <button id="deleteBtn" class="bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem;">delete</span>
+                            <span>MESAJI SİL</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- ==================== HISTORY PAGE ==================== -->
+        <div id="historyPage" class="hidden">
+            
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-sky-600">history</span>
+                    Tarixçə
+                </h2>
+                <p class="text-sm text-gray-600">Yaratdığınız bütün e-poçtlar</p>
+            </div>
+            
+            <!-- Empty History State -->
+            <div id="emptyHistory" class="card text-center py-12">
+                <div class="text-6xl mb-4">📦</div>
+                <p class="text-gray-600">Hələ heç bir mail yaratmamısınız</p>
+            </div>
+            
+            <!-- History List -->
+            <div id="historyList"></div>
+            
+        </div>
+        
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav hidden" id="bottomNav">
+        <button class="nav-item active" data-page="home">
+            <span class="material-symbols-outlined">home</span>
+            <span>Ana Səhifə</span>
+        </button>
+        <button class="nav-item" data-page="history">
+            <div style="position: relative;">
+                <span class="material-symbols-outlined">history</span>
+                <span class="badge hidden" id="historyBadge">0</span>
+            </div>
+            <span>Tarixçə</span>
+        </button>
+    </div>
+    
+    <script type="module">
+        // =============================================
+        // QLOBAL DEYİŞƏNLƏR
+        // =============================================
+        
+        let currentEmail = '';
+        let currentPassword = '';
+        let authToken = '';
+        let accountId = '';
+        let messages = [];
+        let currentMessageId = null;
+        let currentMessageContent = '';
+        let timerSeconds = 600;
+        let timerInterval = null;
+        let pollingInterval = null;
+        let selectedText = '';
+        let emailHistory = [];
+        let currentHistoryEmail = null;
+        
+        const API_BASE = 'https://api.mail.tm';
+        const TIMEOUT = 10000;
+        const STORAGE_KEY = 'orujov_email_history';
+        
+        // =============================================
+        // LOCALSTORAGE FUNKSİYALARI
+        // =============================================
+        
+        /**
+         * Tarixçəni yüklə
+         */
+        function loadHistory() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    emailHistory = JSON.parse(saved);
+                }
+            } catch (error) {
+                console.error('History yüklənmədi:', error);
+                emailHistory = [];
+            }
+        }
+        
+        /**
+         * Tarixçəni saxla
+         */
+        function saveHistory() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(emailHistory));
+                updateHistoryBadge();
+            } catch (error) {
+                console.error('History saxlanmadı:', error);
+            }
+        }
+        
+        /**
+         * Yeni email tarixçəyə əlavə et
+         */
+        function addToHistory(email, password, accountId) {
+            const historyItem = {
+                id: Date.now().toString(),
+                email: email,
+                password: password,
+                accountId: accountId,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Əvvəlki eyni emaili sil (dublikat olmasın)
+            emailHistory = emailHistory.filter(item => item.email !== email);
+            
+            // Yeni emaili əlavə et (ən başa)
+            emailHistory.unshift(historyItem);
+            
+            // Maksimum 50 mail saxla
+            if (emailHistory.length > 50) {
+                emailHistory = emailHistory.slice(0, 50);
+            }
+            
+            saveHistory();
+            renderHistory();
+        }
+        
+        /**
+         * Tarixçədən sil
+         */
+        function deleteFromHistory(id) {
+            emailHistory = emailHistory.filter(item => item.id !== id);
+            saveHistory();
+            renderHistory();
+            
+            // Əgər silinen email aktiv idisə, ana səhifəyə qayıt
+            if (currentHistoryEmail && currentHistoryEmail.id === id) {
+                currentHistoryEmail = null;
+                navigateTo('home');
+            }
+        }
+        
+        /**
+         * History badge-i yenilə
+         */
+        function updateHistoryBadge() {
+            const badge = document.getElementById('historyBadge');
+            if (emailHistory.length > 0) {
+                badge.textContent = emailHistory.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+        
+        // =============================================
+        // UTILITY FUNKSİYALARI
+        // =============================================
+        
+        async function fetchWithTimeout(url, options = {}, timeout = TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Timeout: Sorğu çox uzun çəkdi');
+                }
+                throw error;
+            }
+        }
+        
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function escapeHTML(raw) {
+            if (!raw) return '';
+            const div = document.createElement('div');
+            div.textContent = raw;
+            return div.innerHTML;
+        }
+        
+        function sanitizeHTML(html) {
+            if (!html) return '';
+            let clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            clean = clean.replace(/on\w+\s*=\s*"[^"]*"/gi, '');
+            clean = clean.replace(/on\w+\s*=\s*'[^']*'/gi, '');
+            return clean;
+        }
+        
+        function stripHTML(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent || div.innerText || '';
+        }
+        
+        function formatDate(iso) {
+            if (!iso) return '';
+            const date = new Date(iso);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'İndi';
+            if (diffMins < 60) return `${diffMins} dəq. əvvəl`;
+            if (diffHours < 24) return `${diffHours} saat əvvəl`;
+            if (diffDays < 7) return `${diffDays} gün əvvəl`;
+            
+            return date.toLocaleDateString('az-AZ');
+        }
+        
+        function showSpinner(button) {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<div class="spinner"></div>';
+            button.disabled = true;
+            
+            return () => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            };
+        }
+        
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Kopyalandı!', 'success');
+            } catch (error) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Kopyalandı!', 'success');
+            }
+        }
+        
+        // =============================================
+        // NAVİQASİYA
+        // =============================================
+        
+        function navigateTo(page) {
+            // Səhifələri gizlət
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('historyPage').classList.add('hidden');
+            
+            // Nav itemləri aktiv/deaktiv et
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Seçilən səhifəni göstər
+            if (page === 'home') {
+                document.getElementById('homePage').classList.remove('hidden');
+                document.querySelector('[data-page="home"]').classList.add('active');
+            } else if (page === 'history') {
+                document.getElementById('historyPage').classList.remove('hidden');
+                document.querySelector('[data-page="history"]').classList.add('active');
+                renderHistory();
+            }
+        }
+        
+        // =============================================
+        // MƏTN SEÇİMİ
+        // =============================================
+        
+        function handleTextSelection() {
+            const floatingBtn = document.getElementById('floatingCopyBtn');
+            
+            document.addEventListener('mouseup', (e) => {
+                const messageBody = document.getElementById('messageBody');
+                if (!messageBody || messageBody.closest('#messageDetail').classList.contains('hidden')) {
+                    floatingBtn.classList.remove('show');
+                    return;
+                }
+                
+                setTimeout(() => {
+                    const selection = window.getSelection();
+                    const text = selection.toString().trim();
+                    
+                    if (text.length > 0) {
+                        selectedText = text;
+                        const range = selection.getRangeAt(0);
+                        const rect = range.getBoundingClientRect();
+                        
+                        floatingBtn.style.top = `${rect.top + window.scrollY - 50}px`;
+                        floatingBtn.style.left = `${rect.left + (rect.width / 2) - 60}px`;
+                        floatingBtn.classList.add('show');
+                    } else {
+                        floatingBtn.classList.remove('show');
+                    }
+                }, 10);
+            });
+            
+            floatingBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (selectedText) {
+                    await copyToClipboard(selectedText);
+                    floatingBtn.classList.remove('show');
+                    window.getSelection().removeAllRanges();
+                }
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (e.target.id !== 'floatingCopyBtn' && !e.target.closest('#floatingCopyBtn')) {
+                    setTimeout(() => {
+                        const selection = window.getSelection();
+                        if (selection.toString().trim().length === 0) {
+                            floatingBtn.classList.remove('show');
+                        }
+                    }, 100);
+                }
+            });
+        }
+        
+        // =============================================
+        // TİMER
+        // =============================================
+        
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    showToast('Zaman bitdi! Uzad və ya yeni mail al.', 'error');
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function extendTimer() {
+            timerSeconds = 600;
+            updateTimerDisplay();
+            startTimer();
+            showToast('Vaxt 10 dəqiqəyə uzadıldı', 'success');
+        }
+        
+        // =============================================
+        // MAİL.TM API
+        // =============================================
+        
+        async function getDomains() {
+            try {
+                const response = await fetchWithTimeout(`${API_BASE}/domains`);
+                if (!response.ok) throw new Error('Domain əldə edilmədi');
+                const data = await response.json();
+                return data['hydra:member'] || [];
+            } catch (error) {
+                console.error('Domain səhvi:', error);
+                showToast('Domain yüklənə bilmədi', 'error');
+                return [];
+            }
+        }
+        
+        function generateShortUsername() {
+            const randomNum = Math.floor(Math.random() * 99) + 1;
+            return `orujov${randomNum}`;
+        }
+        
+        async function getNewEmail() {
+            const newEmailBtn = document.getElementById('newEmailBtn');
+            const shipEmoji = document.getElementById('shipEmoji');
+            
+            if (newEmailBtn.disabled) return;
+            
+            newEmailBtn.disabled = true;
+            shipEmoji.classList.add('sinking');
+            
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            
+            shipEmoji.classList.remove('sinking');
+            const hideSpinner = showSpinner(newEmailBtn);
+            
+            try {
+                const domains = await getDomains();
+                if (domains.length === 0) {
+                    throw new Error('Domain tapılmadı');
+                }
+                
+                const domain = domains[0]['domain'];
+                const username = generateShortUsername();
+                currentEmail = `${username}@${domain}`;
+                currentPassword = Math.random().toString(36).slice(-12) + 'Aa1!';
+                
+                const accountResponse = await fetchWithTimeout(`${API_BASE}/accounts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: currentEmail,
+                        password: currentPassword
+                    })
+                });
+                
+                if (!accountResponse.ok) {
+                    const error = await accountResponse.json().catch(() => ({}));
+                    throw new Error(error.message || 'Hesab yaradıla bilmədi');
+                }
+                
+                const accountData = await accountResponse.json();
+                accountId = accountData.id;
+                
+                const tokenResponse = await fetchWithTimeout(`${API_BASE}/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: currentEmail,
+                        password: currentPassword
+                    })
+                });
+                
+                if (!tokenResponse.ok) {
+                    throw new Error('Token alına bilmədi');
+                }
+                
+                const tokenData = await tokenResponse.json();
+                authToken = tokenData.token;
+                
+                // Tarixçəyə əlavə et
+                addToHistory(currentEmail, currentPassword, accountId);
+                
+                document.getElementById('emailDisplay').textContent = currentEmail;
+                
+                timerSeconds = 600;
+                updateTimerDisplay();
+                startTimer();
+                
+                messages = [];
+                renderMessages();
+                checkInbox();
+                
+                showToast('Yeni e-poçt yaradıldı!', 'success');
+                
+            } catch (error) {
+                console.error('Email yaratma səhvi:', error);
+                showToast(error.message || 'E-poçt yaradıla bilmədi', 'error');
+            } finally {
+                hideSpinner();
+            }
+        }
+        
+        async function checkInbox() {
+            if (!authToken) return;
+            
+            try {
+                const response = await fetchWithTimeout(`${API_BASE}/messages`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.status === 401) {
+                    showToast('Token müddəti bitdi', 'info');
+                    return;
+                }
+                
+                if (!response.ok) throw new Error('Mesajlar yüklənmədi');
+                
+                const data = await response.json();
+                const newMessages = data['hydra:member'] || [];
+                
+                if (newMessages.length > messages.length && messages.length > 0) {
+                    showToast('Yeni məktub gəldi!', 'info');
+                }
+                
+                messages = newMessages;
+                renderMessages();
+                
+            } catch (error) {
+                console.error('Inbox səhvi:', error);
+            }
+        }
+        
+        function renderMessages() {
+            const messagesList = document.getElementById('messagesList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (messages.length === 0) {
+                emptyState.classList.remove('hidden');
+                messagesList.innerHTML = '';
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            const sortedMessages = [...messages].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            
+            messagesList.innerHTML = sortedMessages.map(msg => {
+                const from = msg.from?.name || msg.from?.address || 'Naməlum';
+                const subject = msg.subject || '(Mövzu yoxdur)';
+                const preview = msg.intro ? escapeHTML(msg.intro.substring(0, 60)) : '';
+                const date = formatDate(msg.createdAt);
+                
+                return `
+                    <div class="inbox-item" data-id="${msg.id}">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar text-sm">${from.charAt(0).toUpperCase()}</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-gray-800 truncate">${escapeHTML(from)}</div>
+                                <div class="font-medium text-gray-700 truncate mt-1">${escapeHTML(subject)}</div>
+                                <div class="text-sm text-gray-500 truncate mt-1">${preview}...</div>
+                                <div class="text-xs text-gray-400 mt-2">${date}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            messagesList.querySelectorAll('.inbox-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    openEmail(item.dataset.id);
+                });
+            });
+        }
+        
+        async function openEmail(id) {
+            if (!authToken || !id) return;
+            
+            currentMessageId = id;
+            
+            try {
+                const response = await fetchWithTimeout(`${API_BASE}/messages/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.status === 401) {
+                    showToast('Token müddəti bitdi', 'error');
+                    return;
+                }
+                
+                if (!response.ok) throw new Error('Mesaj yüklənmədi');
+                
+                const message = await response.json();
+                
+                document.getElementById('inboxSection').classList.add('hidden');
+                document.getElementById('messageDetail').classList.remove('hidden');
+                
+                const from = message.from?.name || message.from?.address || 'Naməlum';
+                document.getElementById('senderAvatar').textContent = from.charAt(0).toUpperCase();
+                document.getElementById('messageSubject').textContent = message.subject || '(Mövzu yoxdur)';
+                document.getElementById('messageFrom').textContent = `Göndərən: ${escapeHTML(from)}`;
+                document.getElementById('messageDate').textContent = formatDate(message.createdAt);
+                
+                let bodyContent = '';
+                if (message.html && message.html.length > 0) {
+                    bodyContent = sanitizeHTML(message.html[0]);
+                } else if (message.text) {
+                    bodyContent = `<pre style="white-space: pre-wrap; font-family: inherit;">${escapeHTML(message.text)}</pre>`;
+                } else {
+                    bodyContent = '<p class="text-gray-500">Məzmun yoxdur</p>';
+                }
+                
+                document.getElementById('messageBody').innerHTML = bodyContent;
+                currentMessageContent = stripHTML(bodyContent);
+                
+            } catch (error) {
+                console.error('Mesaj açma səhvi:', error);
+                showToast('Mesaj yüklənə bilmədi', 'error');
+            }
+        }
+        
+        function deleteMessageLocal(id) {
+            messages = messages.filter(msg => msg.id !== id);
+            renderMessages();
+            
+            document.getElementById('messageDetail').classList.add('hidden');
+            document.getElementById('inboxSection').classList.remove('hidden');
+            
+            showToast('Mesaj silindi', 'success');
+        }
+        
+        // =============================================
+        // TARİXÇƏ
+        // =============================================
+        
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            const emptyHistory = document.getElementById('emptyHistory');
+            
+            if (emailHistory.length === 0) {
+                emptyHistory.classList.remove('hidden');
+                historyList.innerHTML = '';
+                return;
+            }
+            
+            emptyHistory.classList.add('hidden');
+            
+            historyList.innerHTML = emailHistory.map(item => {
+                const isActive = currentEmail === item.email;
+                const date = formatDate(item.createdAt);
+                
+                return `
+                    <div class="history-item ${isActive ? 'active' : ''}" data-id="${item.id}">
+                        <button class="delete-btn" data-delete-id="${item.id}">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem;">delete</span>
+                        </button>
+                        <div class="flex items-start gap-3 pr-12">
+                            <div class="avatar text-sm">⚓</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-gray-800 truncate">${escapeHTML(item.email)}</div>
+                                <div class="text-sm text-gray-500 mt-1">Yaradılıb: ${date}</div>
+                                ${isActive ? '<div class="text-xs text-sky-600 font-semibold mt-2">● AKTİV</div>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Click handler - email seç
+            historyList.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', async (e) => {
+                    // Delete button üzərinə basılıbsa, return et
+                    if (e.target.closest('.delete-btn')) return;
+                    
+                    const id = item.dataset.id;
+                    await switchToHistoryEmail(id);
+                });
+            });
+            
+            // Delete button handler
+            historyList.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.deleteId;
+                    
+                    if (confirm('Bu e-poçtu tarixçədən silmək istəyirsiniz?')) {
+                        deleteFromHistory(id);
+                    }
+                });
+            });
+        }
+        
+        /**
+         * Tarixçədəki emailə keç
+         */
+        async function switchToHistoryEmail(id) {
+            const historyItem = emailHistory.find(item => item.id === id);
+            if (!historyItem) return;
+            
+            try {
+                // Token al
+                const tokenResponse = await fetchWithTimeout(`${API_BASE}/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: historyItem.email,
+                        password: historyItem.password
+                    })
+                });
+                
+                if (!tokenResponse.ok) {
+                    throw new Error('Token alına bilmədi - mail mövcud deyil');
+                }
+                
+                const tokenData = await tokenResponse.json();
+                
+                // Aktiv maili dəyiş
+                currentEmail = historyItem.email;
+                currentPassword = historyItem.password;
+                accountId = historyItem.accountId;
+                authToken = tokenData.token;
+                
+                // UI-ı yenilə
+                document.getElementById('emailDisplay').textContent = currentEmail;
+                
+                // Timer sıfırla
+                timerSeconds = 600;
+                updateTimerDisplay();
+                startTimer();
+                
+                // Mesajları yenilə
+                messages = [];
+                renderMessages();
+                await checkInbox();
+                
+                // Ana səhifəyə keç
+                navigateTo('home');
+                
+                showToast('Mail aktivləşdi!', 'success');
+                
+            } catch (error) {
+                console.error('Mail switch səhvi:', error);
+                showToast('Bu mail artıq mövcud deyil', 'error');
+                
+                // Tarixçədən sil
+                deleteFromHistory(id);
+            }
+        }
+        
+        // =============================================
+        // POLLİNG
+        // =============================================
+        
+        function startPolling() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            
+            pollingInterval = setInterval(() => {
+                checkInbox();
+            }, 10000);
+        }
+        
+        // =============================================
+        // BAŞLANĞIC
+        // =============================================
+        
+        async function initApp() {
+            const splash = document.getElementById('splash');
+            const app = document.getElementById('app');
+            const bottomNav = document.getElementById('bottomNav');
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            splash.classList.add('hidden');
+            app.classList.remove('hidden');
+            bottomNav.classList.remove('hidden');
+            
+            // Tarixçəni yüklə
+            loadHistory();
+            updateHistoryBadge();
+            
+            // İlk e-poçtu yarat
+            await getNewEmail();
+            
+            startPolling();
+            handleTextSelection();
+            
+            // Event Listeners
+            document.getElementById('newEmailBtn').addEventListener('click', getNewEmail);
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                copyToClipboard(currentEmail);
+            });
+            document.getElementById('extendBtn').addEventListener('click', extendTimer);
+            document.getElementById('refreshBtn').addEventListener('click', checkInbox);
+            document.getElementById('backBtn').addEventListener('click', () => {
+                document.getElementById('messageDetail').classList.add('hidden');
+                document.getElementById('inboxSection').classList.remove('hidden');
+                document.getElementById('floatingCopyBtn').classList.remove('show');
+            });
+            
+            document.getElementById('copyMessageBtn').addEventListener('click', async () => {
+                if (currentMessageContent) {
+                    await copyToClipboard(currentMessageContent);
+                } else {
+                    showToast('Kopyalanacaq məzmun yoxdur', 'error');
+                }
+            });
+            
+            document.getElementById('deleteBtn').addEventListener('click', () => {
+                if (currentMessageId) {
+                    deleteMessageLocal(currentMessageId);
+                }
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    navigateTo(page);
+                });
+            });
+        }
+        
+        initApp();
+        
+    </script>
+    
+</body>
+</html>
